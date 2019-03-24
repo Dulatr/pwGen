@@ -26,7 +26,7 @@ void main(int argc, char *argv[]){
     else{   
         //taken by example by Brian Kernighan from C programming second edition
         //use argc to determine argument processed, increment through each argument in argv[]
-        while(--argc > 0 && (*++argv)[0] == '-'){
+        while((*++argv)[0] == '-'){
             while(options = *++argv[0]){
                 switch (options)
                 {
