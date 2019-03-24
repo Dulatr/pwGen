@@ -38,6 +38,10 @@ void main(int argc, char *argv[]){
                             printf("Defaulting to %d for length. you tried: %d\n",MAX,length);
                             length = MAX;
                         }
+                        else if(length == 0){
+                            printf("Invalid length entry, defaulting to length 12\n");
+                            length = 12;
+                        }
                         break;  
                     default:
                         printf("unrecognized option:> %c\n",options);
