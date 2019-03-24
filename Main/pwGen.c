@@ -18,7 +18,7 @@ void main(int argc, char *argv[]){
     int i;
     int length,midpoint,rval,options;
     int l_flag = 0, unrecognized=0;
-
+    
     if(argc > 3){
         printf(error1);
         return;
@@ -26,14 +26,17 @@ void main(int argc, char *argv[]){
     else{   
         //taken by example by Brian Kernighan from C programming second edition
         //increment through each argument in argv[]
-        while((*++argv)[0] == '-'){
+        while(--argc>0 && (*++argv)[0] == '-'){
+            
             while(options = *++argv[0]){
                 switch (options)
                 {
                     //room here for more flag options in the future
                     case 'l':
                         l_flag = 1;
-                        length = atoi(argv[1]);
+                        if(argc > 1){
+                            length = atoi(argv[1]);
+                        }
                         if(length > MAX){
                             printf("Defaulting to %d for length. you tried: %d\n",MAX,length);
                             length = MAX;
