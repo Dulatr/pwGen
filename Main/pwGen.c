@@ -4,7 +4,7 @@
 #include <ctype.h>
 
 //common text
-#define usage "\n\tUSAGE: pwGen -l <integer length>\n"
+#define usage "\n\tUSAGE: pwGen -l <integer length>\n\t       pwGen -s -l <integer length>\n\t       pwGen -ls/sl <integer length>\n"
 #define error1 "Too many arguements provided. Exiting...\n"
 #define MAX 40
 
@@ -13,13 +13,16 @@ const char list[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o'
                         'w','x','y','z','@','!','#','$','%','&','*','(',')','-','_','=','+','[',']','{','}','<','>','?',
                         '|','~','`'};
 
+int * is_sequential(char str[],int str_length);
+
 void main(int argc, char *argv[]){
 
     int i;
     int length,midpoint,rval,options;
-    int l_flag = 0, unrecognized=0;
-    
-    if(argc > 3){
+    int l_flag = 0,s_flag = 0, unrecognized=0;
+    int * sequence;
+
+    if(argc > 4){
         printf(error1);
         return;
     }
@@ -46,6 +49,9 @@ void main(int argc, char *argv[]){
                             length = 12;
                         }
                         break;  
+                    case 's':
+                        s_flag = 1;
+                        break;
                     default:
                         printf("unrecognized option:> %c\n",options);
                         printf(usage);
@@ -76,11 +82,11 @@ void main(int argc, char *argv[]){
 
     for(i=0;i<midpoint;i++){
 
-        password[i] = list[rand() % 48];
-        password[length-i-1] = list[rand() % 48];
+        password[i] = list[rand() % ((int)sizeof(list)/sizeof(list[0]))];
+        password[length-i-1] = list[rand() % ((int)sizeof(list)/sizeof(list[0]))];
 
-        if(isalpha(password[i]) || isalpha(password[length - i -1])){
-            //whether alphabetical characters should be capitalized            
+        //whether alphabetical characters should be capitalized
+        if(isalpha(password[i]) || isalpha(password[length - i -1])){      
             rval = rand() % 10;
             if(rval>5){
                 password[i] = toupper(password[i]);
@@ -91,10 +97,53 @@ void main(int argc, char *argv[]){
             }
         }
     }
+    //sequential flag    
+    if(s_flag){
+        while(s_flag){
+            int fin_ctr = 0;   
 
+            sequence = is_sequential(password,length); 
+
+            for(int j =0;j<length;j++){
+                if(sequence[j] == 1){
+                    password[j] = list[rand() % ((int)sizeof(list)/sizeof(list[0]))];
+                    fin_ctr++;        
+                }
+            }
+            if(fin_ctr == 0){
+                s_flag = 0;
+            }          
+        }
+        free(sequence);         
+    }
+    //display password
     for(i=0;i<length;i++){
         printf("%c",password[i]);
-    }
+    }    
     printf("\n");
     return;
+}
+
+/*  scans a character string of known length,
+    returns the indices of the repeated sequential characters
+    maximum indices length is if every character in password is the same.
+    
+    If a character that follows immediately after previous adjacent character repeats,
+    this function will return a 1 at that index.*/
+int * is_sequential(char str[],int str_length){
+    int i,j=0;
+    int * indices = malloc(sizeof(int) * str_length);
+
+    for(i=0;i<str_length;i++){
+        if(str[i] == str[i+1]){
+            indices[i]=1;
+            j++;
+        }
+        else
+        {
+            indices[i] = 0;
+        }       
+    }
+    
+    return indices;
 }
