@@ -6,9 +6,10 @@ Compile with gcc or cc, make sure the output is executable.
 
 ``pwGen <option> <value>``
 
-``option(s): -l <integer value>     Edits length of generated password.``
+option(s): 
+``-l <integer value>     Edits length of generated password.``
 
-``           -s                     Prevents any adjacent character from repeating``
+``-s                     Prevents any adjacent character from repeating``
 
 
 If no options are given it will output a 12 character password. 
