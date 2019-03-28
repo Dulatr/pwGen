@@ -12,4 +12,4 @@ There are 85 possible characters to choose from for a password which is pretty m
 
 # Like the project?
 
-I'm using this program as a means for learning various string manipulation and PRNG applications. I invite anyone to try and develop improvements, feel free to use the  or even methods of cracking generated passwords As I learn more I'll apply it to the program in a reasonable way. See [program general info](https://github.com/Dulatr/pwGen/blob/master/README.md "home page") for new updates.
+I'm using this program as a means for learning various string manipulation and PRNG applications. I invite anyone to try and develop improvements or even methods of cracking generated passwords from pwGen (I do not condone password cracking for any illicit purpose, but merely for education and safety). As I learn more I'll apply it to the program in a reasonable way. See [program general info](https://github.com/Dulatr/pwGen/blob/master/README.md "home page") for new updates.
