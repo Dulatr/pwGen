@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <ctype.h>
+
+#include <sys/random.h>
+#include <sys/errno.h>
 
 //common text
 #define usage "\n\tUSAGE: pwGen -l <integer length>\n\t       pwGen -s -l <integer length>\n\t       pwGen -ls/sl <integer length>\n"
@@ -10,17 +12,20 @@
 
 //character list
 const char list[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
-                        'w','x','y','z','@','!','#','$','%','&','*','(',')','-','_','=','+','[',']','{','}','<','>','?',
+                        'w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V',
+                        'W','X','Y','Z','@','!','#','$','%','&','*','(',')','-','_','=','+','[',']','{','}','<','>','?',
                         '|','~','`','0','1','2','3','4','5','6','7','8','9'};
 
 int * is_sequential(char str[],int str_length);
 
 void main(int argc, char *argv[]){
 
-    int i;
+    int i=0;
+    int list_sz = ((int)sizeof(list)/sizeof(list[0]));
     int length,midpoint,rval,options;
     int l_flag = 0,s_flag = 0, unrecognized=0;
     int * sequence;
+    int seed_bank[256];
 
     if(argc > 4){
         printf(error1);
@@ -70,7 +75,31 @@ void main(int argc, char *argv[]){
 
     //password generation
     char password[length];
-    srand(time(NULL));
+    int seed = getrandom(seed_bank,256,GRND_NONBLOCK);
+    //error check
+    if(seed<0){
+        switch (errno)
+        {
+            case 11:
+                printf("Error 'EAGAIN'\n");
+                break;
+            case 14:
+                printf("Error 'EFAULT'\n");
+                break;
+            case 4:
+                printf("Error 'EINTR'\n");
+                break;
+            case 38:
+                printf("Error 'ENOSYS'\n");
+                break;
+            default:
+                printf("Uncommon seed error. Errno: %d",errno);
+                break;
+        }
+        return;
+    }
+
+    srand(seed_bank[0]);
 
     if(length % 2 != 0){
         midpoint = length/2 + 1;
@@ -81,21 +110,16 @@ void main(int argc, char *argv[]){
     }   
 
     for(i=0;i<midpoint;i++){
+        
+        password[i] = list[rand() % list_sz];
 
-        password[i] = list[rand() % ((int)sizeof(list)/sizeof(list[0]))];
-        password[length-i-1] = list[rand() % ((int)sizeof(list)/sizeof(list[0]))];
+        seed = getrandom(seed_bank,256,GRND_NONBLOCK);
+        srand(seed_bank[0]);
 
-        //whether alphabetical characters should be capitalized
-        if(isalpha(password[i]) || isalpha(password[length - i -1])){      
-            rval = rand() % 10;
-            if(rval>5){
-                password[i] = toupper(password[i]);
-            }
-            rval = rand() % 10;
-            if(rval > 5){
-                password[length - i - 1] = toupper(password[length - i - 1]);
-            }
-        }
+        password[length-i-1] = list[rand() % list_sz];
+
+        seed = getrandom(seed_bank,256,GRND_NONBLOCK);
+        srand(seed_bank[0]);
     }
     //sequential flag    
     if(s_flag){
@@ -105,16 +129,17 @@ void main(int argc, char *argv[]){
             sequence = is_sequential(password,length); 
 
             for(int j =0;j<length;j++){
-                if(sequence[j] == 1){
-                    password[j] = list[rand() % ((int)sizeof(list)/sizeof(list[0]))];
-                    fin_ctr++;        
+                if(sequence[j] == 1){                 
+                    password[j] = list[rand() % list_sz];
+                    fin_ctr++; 
+                    srand(seed_bank[j]);       
                 }
             }
             if(fin_ctr == 0){
                 s_flag = 0;
             }          
         }
-        free(sequence);         
+        free(sequence);        
     }
     //display password
     for(i=0;i<length;i++){
@@ -147,3 +172,4 @@ int * is_sequential(char str[],int str_length){
     
     return indices;
 }
+
