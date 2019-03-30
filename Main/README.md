@@ -4,7 +4,7 @@ A few things to mention before proceeding to use this program.
 
 Firstly, I make no guarantees that this password generation technique is going to be "uncrackable". Anyone who knows the open source code provided could likely come up with some method to create a hash table. Always use safe practices, like avoid websites that don't have a maximum number of attempts or has a history of date breaches.
 
-A better method here would be to require a new seed each rand() call such as seeding by the machine cycle, johnson noise and possibly many others I've no knowledge of at this time. 
+The password generation has recently been improved to use an available source of entropy from the linux kernel (/dev/urandom/ used by sys/random.h library). This allows for batch password generation in a less compromising way. It is safe to generate large amounts of passwords using this without fear of repeating substrings. A sample output of the program is held in [sample.dat](https://github.com/Dulatr/pwGen/blob/SecureGen/Main/sample.dat). 
 
 #### Combinations
 
