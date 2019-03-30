@@ -15,7 +15,7 @@ option(s):
 
 If no options are given it will output a 12 character password. 
 
-Due to the nature of the seed (time(NULL)), rapid execution will result in the same password being generated. It's not recommended for large batch password generation, but it's possible if you just allow the system to sleep between executions.
+This program using a more secure RNG from sys/random.h, which does not rely on direct file reading from /dev/urandom/ so it should work on different distributions and without root permissions to perform. 
 
 ## Make it better? 
 
