@@ -2,7 +2,7 @@
 A simple implementation of a password generator that you can run at the command line.
 
 ## Usage
-Compile with gcc or cc, make sure the output is executable.
+Run `make` after cloning. If wanted to have it executable outside of repository run `make install`
 
 ``pwGen <option> <value>``
 
