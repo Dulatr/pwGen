@@ -20,9 +20,9 @@ uint16_t Twist(uint16_t seed){
     uint16_t z,x,y;
     
     y=seed^(x>>11);
-    y=y^((y<<7)& 0x5680);
-    y=y^((y<<15)&0xEFC6);
-    z=y^(y>>18);
+    y=y^((y<<3)& 0x5680);
+    y=y^((y<<7)&0xEFC6);
+    z=y^(y>>9);
 }
 
 uint16_t * Seed_list(uint16_t constant){
